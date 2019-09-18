@@ -1,6 +1,10 @@
 # leaflet map
 # https://rstudio.github.io/leaflet/
 
+library(tidyverse)
+library(leaflet)
+library(magrittr)
+
 #### DATA FRAME CLIMBING PLACES
 df = data.frame(matrix(ncol = 5, nrow = 0))
 colnames(df) = c("place","lat","lng","type","year")
@@ -11,6 +15,7 @@ df[4,] = c("Passo Fedaia",46.456491, 11.860149,"Lead Climbing",2019)
 df[5,] = c("Sasso Bruno - Passo Pordoi",46.489010, 11.796582,"Lead Climbing",2019)
 df[6,] = c("Sasso Malga - Passo Sella",46.512370, 11.758457,"Lead Climbing",2019)
 df[7,] = c("Torri del Sella",46.511015, 11.779914,"Multi-pitch",2019)
+df[8,] = c("Lagoni",44.402991, 10.007326,"Lead Climbing",2019)
 
 
 #### DATA FRAME CLIMBING ROUTES
@@ -22,10 +27,15 @@ df_routes[2,] = c("Arco","Due Piccoli Pilastri","Multi-pitch",2019,"May","V+",15
 df_routes[3,] = c("Pietra di Bismantova","Zuffa/Ruggiero","Multi-pitch",2019,"July","V",105,350,5)
 df_routes[4,] = c("Pietra di Bismantova","Italia 90 - variante Penna","Multi-pitch",2019,"July","6a",125,410,4)
 df_routes[5,] = c("Torri del Sella","Spigolo Steger","Multi-pitch",2019,"July","IV+",140,460,5)
+df_routes[6,] = c("Lagoni","Tettino","Lead Climbing",2019,"August","6a+",20,65,1)
+df_routes[7,] = c("Lagoni","Cresta dello Sterpara","Multi-pitch",2019,"August","IV+",100,330,5)
+df_routes[8,] = c("Pilot Mountain","Devil in the White House","Lead Climbing",2019,"September","10d",18,60,1)
+df_routes[9,] = c("Pilot Mountain","Smooth Sailing","Lead Climbing",2019,"September","10a",25,80,1)
+df_routes[10,] = c("Pilot Mountain","Pump Street","Lead Climbing",2019,"September","10a",20,65,1)
 
 
-library(leaflet)
-library(magrittr)
+
+
 df$lat = as.numeric(df$lat) ; df$lng = as.numeric(df$lng)
 m = leaflet(df) %>% addTiles()
 m %>% addCircleMarkers(fill = FALSE)
@@ -44,7 +54,7 @@ getColor <- function(data) {
 
 icons <- awesomeIcons(
   icon = 'ios-close',
-  iconColor = 'black',
+  iconColor = unname(getColor(df)),
   library = 'ion',
   markerColor = unname(getColor(df))
 )
@@ -53,56 +63,96 @@ leaflet(df) %>% addTiles() %>%
   addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type))
 
 
-pal <- colorFactor(c("red", "green","orange"), 
-                   domain = c("Lead Climbing", "Multi-pitch","Boulder"))
-leaflet(df) %>% addTiles() %>%
-  addCircleMarkers(
-    color = ~pal(type),
-    stroke = FALSE, fillOpacity = 0.5
+### EXAMPLE WITH POPUP
+df_pietra = df_routes %>% 
+  filter(place == "Pietra di Bismantova")
+
+content <- paste(sep = "<br/>",
+                 "<b><a href='http://www.samurainoodle.com'>Samurai Noodle</a></b>",
+                 "606 5th Ave. S",
+                 "Seattle, WA 98138"
+)
+
+
+create_popup = function(df_routes, name_place){
+  
+  df_int =filter(df_routes,place == name_place)
+  n = nrow(df_int)
+  
+  html_title = paste("<head>
+                     <style>
+                     table, th, td {
+                     border: 1px solid black;
+                     border-collapse: collapse;
+                     }
+                     th, td {
+                     padding: 5px;
+                     }
+                     th {
+                     text-align: left;
+                     }
+                     </style>
+                     </head>
+                     <body>
+                     
+                     <h2>", 
+                     name_place, 
+                     #"</h2>
+                     #<p>Write here something</p>",
+                     "</h2>
+                     <p></p>",
+                     sep = "")
+  
+  
+  
+  
+  if (n > 0){
+    table_colnames = "<table style='width:100%'>
+    <tr>
+    <th>Name route</th>
+    <th>year</th> 
+    <th>grade</th> 
+    <th>vertical meters</th>
+    <th>pitches</th>
+    </tr>"
+    
+    table_curr = paste(html_title,table_colnames,sep = "")
+    
+    for(j in 1:n){
+      curr_row = paste("<tr>
+                       <td>",df_int[j,2], "</td>
+                       <td>",df_int[j,4] ,"</td>
+                       <td>",df_int[j,6] ,"</td>
+                       <td>",df_int[j,7] ,"</td>
+                       <td>",df_int[j,9] ,"</td>
+                       </tr>")
+      
+      table_curr = paste(table_curr,curr_row,sep = "")
+      
+    }
+    html_fin = paste(table_curr,"</table>
+                     
+                     </body>",sep = "")
+  }else{
+    html_fin = paste(html_title,"
+                     </body>",sep = "")
+  }
+  
+  return(html_fin)
+  }
+
+pie_pop = create_popup(df_routes = df_routes,"Pietra di Bismantova")
+pilot_pop = create_popup(df_routes = df_routes, "Pilot Mountain")
+
+leaflet() %>% addTiles() %>%
+  addPopups(-122.327298, 47.597131, pie_pop,
+            options = popupOptions(closeButton = FALSE)
   )
 
+leaflet() %>% addTiles() %>%
+  addPopups(-122.327298, 47.597131, pie_pop
+  )
 
-
-
-m = leaflet() %>% addTiles()
-df = data.frame(
-  lat = rnorm(100),
-  lng = rnorm(100),
-  size = runif(100, 5, 20),
-  color = sample(colors(), 100)
-)
-m %>% addCircleMarkers(radius = ~size, color = ~color, fill = FALSE)
-m %>% addCircleMarkers(radius = runif(100, 4, 10), color = c('red'))
-
-
-
-data(quakes)
-
-df.20 <- quakes[1:20,]
-
-getColor <- function(quakes) {
-  sapply(quakes$mag, function(mag) {
-    if(mag <= 4) {
-      "green"
-    } else if(mag <= 5) {
-      "orange"
-    } else {
-      "red"
-    } })
-}
-
-icons <- awesomeIcons(
-  icon = 'ios-close',
-  iconColor = 'black',
-  library = 'ion',
-  markerColor = getColor(df.20)
-)
-
-leaflet(df.20) %>% addTiles() %>%
-  addAwesomeMarkers(~long, ~lat, icon=icons, label=~as.character(mag))
-
-
-
-
-
+leaflet() %>% addTiles() %>%
+  addMarkers(-122.327298, 47.597131, popup =   pie_pop)
 

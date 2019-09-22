@@ -4,6 +4,8 @@
 library(tidyverse)
 library(leaflet)
 library(magrittr)
+library(htmlwidgets)
+
 
 #### DATA FRAME CLIMBING PLACES
 df = data.frame(matrix(ncol = 5, nrow = 0))
@@ -146,23 +148,26 @@ pilot_pop = create_popup(df_routes = df_routes, "Pilot Mountain")
 arco_pop = create_popup(df_routes = df_routes, "Arco")
 sella_pop = create_popup(df_routes = df_routes, "Torri del Sella")
 lagoni_pop = create_popup(df_routes = df_routes, "Lagoni")
+bruno_pop = create_popup(df_routes = df_routes, "Sasso Bruno - Passo Pordoi")
+malga_pop = create_popup(df_routes = df_routes, "Sasso Malga - Passo Sella")
+fedaia_pop = create_popup(df_routes = df_routes, "Passo Fedaia")
 
-
-
-
-leaflet() %>% addTiles() %>%
-  addPopups(-122.327298, 47.597131, pie_pop
-  )
-
-leaflet() %>% addTiles() %>%
-  addMarkers(-122.327298, 47.597131, popup = pie_pop)
 
 df[1,"popup"] = pilot_pop
 df[2,"popup"] = arco_pop
 df[3,"popup"] = pie_pop
+df[4,"popup"] = fedaia_pop
+df[5,"popup"] = bruno_pop
+df[6,"popup"] = malga_pop
 df[7,"popup"] = sella_pop
 df[8,"popup"] = lagoni_pop
-df[4:6,"popup"] = ""
-leaflet(df) %>% addTiles() %>%
+
+
+final_map = leaflet(df) %>% addTiles() %>%
   addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type),
                     popup =~ popup)
+
+
+# save
+saveWidget(final_map, file="climbing.html")
+

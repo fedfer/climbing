@@ -143,16 +143,26 @@ create_popup = function(df_routes, name_place){
 
 pie_pop = create_popup(df_routes = df_routes,"Pietra di Bismantova")
 pilot_pop = create_popup(df_routes = df_routes, "Pilot Mountain")
+arco_pop = create_popup(df_routes = df_routes, "Arco")
+sella_pop = create_popup(df_routes = df_routes, "Torri del Sella")
+lagoni_pop = create_popup(df_routes = df_routes, "Lagoni")
 
-leaflet() %>% addTiles() %>%
-  addPopups(-122.327298, 47.597131, pie_pop,
-            options = popupOptions(closeButton = FALSE)
-  )
+
+
 
 leaflet() %>% addTiles() %>%
   addPopups(-122.327298, 47.597131, pie_pop
   )
 
 leaflet() %>% addTiles() %>%
-  addMarkers(-122.327298, 47.597131, popup =   pie_pop)
+  addMarkers(-122.327298, 47.597131, popup = pie_pop)
 
+df[1,"popup"] = pilot_pop
+df[2,"popup"] = arco_pop
+df[3,"popup"] = pie_pop
+df[7,"popup"] = sella_pop
+df[8,"popup"] = lagoni_pop
+df[4:6,"popup"] = ""
+leaflet(df) %>% addTiles() %>%
+  addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type),
+                    popup =~ popup)

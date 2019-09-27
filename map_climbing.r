@@ -5,7 +5,7 @@ library(tidyverse)
 library(leaflet)
 library(magrittr)
 library(htmlwidgets)
-
+library(shiny)
 
 #### DATA FRAME CLIMBING PLACES
 df = data.frame(matrix(ncol = 5, nrow = 0))
@@ -170,4 +170,39 @@ final_map = leaflet(df) %>% addTiles() %>%
 
 # save
 saveWidget(final_map, file="climbing.html")
+
+
+### Shiny integration ###
+ui <- shiny::fluidPage(
+  leafletOutput("mymap"),
+  shiny::p(),
+  shiny::actionButton("recalc", "New points")
+)
+
+server <- function(input, output, session) {
+  
+  # points <- eventReactive(input$recalc, {
+  #   cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
+  # }, ignoreNULL = FALSE)
+  
+  points <- shiny::eventReactive(input$recalc, {
+    df
+  }, ignoreNULL = FALSE)
+  
+  # output$mymap <- renderLeaflet({
+  #   leaflet() %>%
+  #     addProviderTiles(providers$Stamen.TonerLite,
+  #                      options = providerTileOptions(noWrap = TRUE)
+  #     ) %>%
+  #     addMarkers(data = points())
+  # })
+  
+  output$mymap <- renderLeaflet({
+    leaflet(points()) %>% addTiles() %>%
+      addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type),
+                        popup =~ popup)
+  })
+}
+
+shiny::shinyApp(ui, server)
 

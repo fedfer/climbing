@@ -2,6 +2,7 @@
 title: "Climbing Map"
 author: "Federico Ferrari"
 output: html_document
+
 ---
 
 ```{r setup, include=FALSE}

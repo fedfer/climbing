@@ -1,3 +1,10 @@
+---
+title: "Climbing Map"
+author: "Federico Ferrari"
+output: html_document
+---
+
+```{r setup, include=FALSE}
 # leaflet map
 # https://rstudio.github.io/leaflet/
 
@@ -166,43 +173,9 @@ df[8,"popup"] = lagoni_pop
 final_map = leaflet(df) %>% addTiles() %>%
   addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type),
                     popup =~ popup)
+final_map
+```
 
-
-# save
-saveWidget(final_map, file="climbing.html")
-
-
-### Shiny integration ###
-ui <- shiny::fluidPage(
-  leafletOutput("mymap"),
-  shiny::p(),
-  shiny::actionButton("recalc", "New points")
-)
-
-server <- function(input, output, session) {
-  
-  # points <- eventReactive(input$recalc, {
-  #   cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
-  # }, ignoreNULL = FALSE)
-  
-  points <- shiny::eventReactive(input$recalc, {
-    df
-  }, ignoreNULL = FALSE)
-  
-  # output$mymap <- renderLeaflet({
-  #   leaflet() %>%
-  #     addProviderTiles(providers$Stamen.TonerLite,
-  #                      options = providerTileOptions(noWrap = TRUE)
-  #     ) %>%
-  #     addMarkers(data = points())
-  # })
-  
-  output$mymap <- renderLeaflet({
-    leaflet(points()) %>% addTiles() %>%
-      addAwesomeMarkers(~lng, ~lat, icon=icons, label=~as.character(type),
-                        popup =~ popup)
-  })
-}
-
-shiny::shinyApp(ui, server)
-
+```{r map, echo = F}
+final_map
+```

@@ -5,9 +5,8 @@ account: fedfer
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1255378
-bundleId: 2450202
+bundleId: 2456597
 url: https://fedfer.shinyapps.io/climbing/
-when: 1569604260.03178
+when: 1569874047.88709
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData|climbing.html|map_climbing.r

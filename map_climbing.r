@@ -18,6 +18,7 @@ df[5,] = c("Sasso Bruno - Passo Pordoi",46.489010, 11.796582,"Lead Climbing",201
 df[6,] = c("Sasso Malga - Passo Sella",46.512370, 11.758457,"Lead Climbing",2019)
 df[7,] = c("Torri del Sella",46.511015, 11.779914,"Multi-pitch",2019)
 df[8,] = c("Lagoni",44.402991, 10.007326,"Lead Climbing",2019)
+df[9,] = c("Crowder's Mountain",35.210875, -81.287783,"Lead Climbing",2019)
 
 
 #### DATA FRAME CLIMBING ROUTES
@@ -34,6 +35,8 @@ df_routes[7,] = c("Lagoni","Cresta dello Sterpara","Multi-pitch",2019,"August","
 df_routes[8,] = c("Pilot Mountain","Devil in the White House","Lead Climbing",2019,"September","10d",18,60,1)
 df_routes[9,] = c("Pilot Mountain","Smooth Sailing","Lead Climbing",2019,"September","10a",25,80,1)
 df_routes[10,] = c("Pilot Mountain","Pump Street","Lead Climbing",2019,"September","10a",20,65,1)
+df_routes[11,] = c("Crowder's Mountain","Path to Extinction","Lead Climbing",2019,"October","10a",15,50,1)
+df_routes[12,] = c("Crowder's Mountain","Toxic Shock","Top Rope",2019,"October","11c",15,50,1)
 
 
 
@@ -151,7 +154,7 @@ lagoni_pop = create_popup(df_routes = df_routes, "Lagoni")
 bruno_pop = create_popup(df_routes = df_routes, "Sasso Bruno - Passo Pordoi")
 malga_pop = create_popup(df_routes = df_routes, "Sasso Malga - Passo Sella")
 fedaia_pop = create_popup(df_routes = df_routes, "Passo Fedaia")
-
+crowders_pop = create_popup(df_routes = df_routes, "Crowder's Mountain")
 
 df[1,"popup"] = pilot_pop
 df[2,"popup"] = arco_pop
@@ -161,6 +164,8 @@ df[5,"popup"] = bruno_pop
 df[6,"popup"] = malga_pop
 df[7,"popup"] = sella_pop
 df[8,"popup"] = lagoni_pop
+df[9,"popup"] = crowders_pop
+
 
 
 final_map = leaflet(df) %>% addTiles() %>%

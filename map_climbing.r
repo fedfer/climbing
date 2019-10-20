@@ -37,6 +37,7 @@ df_routes[9,] = c("Pilot Mountain","Smooth Sailing","Lead Climbing",2019,"Septem
 df_routes[10,] = c("Pilot Mountain","Pump Street","Lead Climbing",2019,"September","10a",20,65,1)
 df_routes[11,] = c("Crowder's Mountain","Path to Extinction","Lead Climbing",2019,"October","10a",15,50,1)
 df_routes[12,] = c("Crowder's Mountain","Toxic Shock","Top Rope",2019,"October","11c",15,50,1)
+df_routes[13,] = c("Pilot Mountain","The Herculean Test","Lead Climbing",2019,"October","11a",15,50,1)
 
 
 
